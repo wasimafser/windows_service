@@ -5,6 +5,8 @@ import servicemanager
 
 import socket
 import logging
+import psutil
+import sys
 
 logging.basicConfig(filename="service.log", level=logging.DEBUG)
 
@@ -32,7 +34,13 @@ class ExampleService(win32serviceutil.ServiceFramework):
     def main(self):
         """DO THE RUN STUFF HERE"""
         logging.info("SERVICE MAIN ENTERED !!")
+        psutil.Popen('notepad.exe')
 
 
 if __name__ == '__main__':
-    win32serviceutil.HandleCommandLine(ExampleService)
+    if len(sys.argv) == 1:
+        servicemanager.Initialize()
+        servicemanager.PrepareToHostSingle(ExampleService)
+        servicemanager.StartServiceCtrlDispatcher()
+    else:
+        win32serviceutil.HandleCommandLine(ExampleService)
